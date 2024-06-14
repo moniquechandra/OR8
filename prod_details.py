@@ -89,12 +89,13 @@ class Parameters:
             for dc, states in dc_allocation.items():
                 if state in states:
                     weight_large_shipments_per_state = demand_data['total_weight_large_shipments'][state]
-                    weight_small_shipments_per_state = demand_data['total_weight_small_shipments'][state]
+                    # weight_small_shipments_per_state = demand_data['total_weight_small_shipments'][state]
                     
                     tariff_from_dc_to_state = outbound_data.loc[state, dc]
 
-                    shipping_costs.append(weight_large_shipments_per_state * tariff_from_dc_to_state + weight_small_shipments_per_state * 7)
-
+                    shipping_costs.append(weight_large_shipments_per_state * tariff_from_dc_to_state)
+                    shipping_costs.append(7*51)
+                                    
         return shipping_costs
 
     def handling_out_costs(self, dc_allocation, unit_data, handling_out_data):
@@ -147,11 +148,6 @@ class Parameters:
 
     def warehousing_costs(self, storage, handling_in, handling_out):
         total_warehousing_costs = storage + handling_in + handling_out
-        print('Storage Costs:', storage)
-        print('Total Handling In Costs:', handling_in)
-        print('Total Handling Out Costs:', handling_out)
-        print('Total Warehousing Costs:', total_warehousing_costs)
-
         return total_warehousing_costs
 
     def operational_costs(self, dc_allocation, as_is_dc=False, costs_data=False):
@@ -202,4 +198,23 @@ class Parameters:
         
         return total_storage_costs
     
+    def total_costs(self, dc_allocation, as_is_dc=False):
+        dc_product_demand = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data)
+        dc_product_demand_container = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data, False)
+        volume_dc = self.volume_per_dc(dc_product_demand)
+        storage = self.storage_costs(volume_dc, self.warehousing_storageCost)
+        handling_in = self.handling_in_costs(dc_product_demand_container, self.warehousing_handlingIn_data)
+        handling_out = self.handling_out_costs(dc_allocation, self.unit_data, self.warehousing_handlingOut_data)
+
+        outbound = sum(self.outbound_costs(dc_allocation, self.demand_data, self.outbound_data))
+        inbound = 1124750 # has to be changed later
+        warehousing = self.warehousing_costs(storage, handling_in, handling_out)
+        operational = self.operational_costs(dc_allocation, as_is_dc, self.costs_data)
+
+        total_costs = outbound + operational + warehousing
+        
+        costs = [total_costs, inbound, warehousing, outbound, operational]
+
+        return costs
+
 to_be = {'WA': ['AK', 'ID', 'OR', 'WA'], 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'KY', 'MO', 'MS', 'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV'], 'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC'], 'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI'], 'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX']}
