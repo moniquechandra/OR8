@@ -3,7 +3,6 @@ import math as m
 import warnings
 warnings.filterwarnings('ignore')
 
-
 class Parameters:
     # Dataset
     outbound_data = pd.read_excel("Outbound.xlsx")
@@ -34,7 +33,18 @@ class Parameters:
 
     # Functions
     def product_demand_per_dc(self, dc_allocation, demand_data, product_data, unit_in_box=True):
-        # Calculate the demand per product and DC in boxes (if unit_in_box = True) and in container (otherwise)
+        """
+        Calculates the demand per product and distribution center (DC).
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - demand_data: DataFrame, the demand forecast data.
+        - product_data: DataFrame, the product master data.
+        - unit_in_box: bool, if True calculates demand in boxes, otherwise in containers.
+
+        Returns:
+        - dc_product_demand: dict, demand per product and DC.
+        """
         dc_product_demand = {}
         
         for dc in dc_allocation:
@@ -54,8 +64,51 @@ class Parameters:
                 dc_product_demand[dc][product] = m.ceil(total_demand_per_dc) 
 
         return dc_product_demand            
+
+    def inbound_containers_per_dc(dc_product_demand_containers):
+        """
+        Converts the product demand per DC to a DataFrame and exports it to an Excel file.
+
+        Parameters:
+        - dc_product_demand_containers: dict, product demand per DC in containers.
+
+        Returns:
+        - None
+        """
+        # Create lists to hold the data
+        states = []
+        products = []
+        containers = []
+
+        # Extract data from the dictionary
+        for state, products_data in dc_product_demand_containers.items():
+            for product, container_count in products_data.items():
+                states.append(state)
+                products.append(product)
+                containers.append(container_count)
+
+        # Create a DataFrame
+        df = pd.DataFrame({'State': states, 'Product': products, 'Containers': containers})
+
+        # Pivot the DataFrame to get the desired format
+        output_data = df.pivot(index='State', columns='Product', values='Containers')
+
+        # Export the DataFrame to an Excel file
+        output_file_path = "containers_output.xlsx"  # Specify the complete file path
+        output_data.to_excel(output_file_path)
+        print("Excel file created successfully:", output_file_path)
             
+
     def volume_per_dc(self, dc_product_demand):
+        """
+        Calculates the volume required per DC based on product demand.
+
+        Parameters:
+        - dc_product_demand: dict, product demand per DC in boxes.
+
+        Returns:
+        - volumes_perDC: dict, volume required per DC for each product.
+        """
         products = ['blender', 'swing', 'chair', 'scooter', 'skiprope']
         volume_perBox = [0.0070, 0.0045, 0.0098, 0.0200, 0.0055]
         average_stock_level_per_product = [20, 30, 25, 10, 40]
@@ -84,6 +137,17 @@ class Parameters:
         return volumes_perDC
 
     def outbound_costs(self, dc_allocation, demand_data, outbound_data):
+        """
+        Calculates the outbound shipping costs.
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - demand_data: DataFrame, the demand forecast data.
+        - outbound_data: DataFrame, the outbound cost data.
+
+        Returns:
+        - shipping_costs: list, calculated outbound shipping costs.
+        """
         shipping_costs = []
         for state in demand_data.index:
             for dc, states in dc_allocation.items():
@@ -99,7 +163,17 @@ class Parameters:
         return shipping_costs
 
     def handling_out_costs(self, dc_allocation, unit_data, handling_out_data):
-        # Calculate the handling out costs (based on storage unit -- boxes or pallets)
+        """
+        Calculates the handling out costs based on storage unit (boxes or pallets).
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - unit_data: DataFrame, the unit data per state.
+        - handling_out_data: DataFrame, the handling out cost data.
+
+        Returns:
+        - total_handling_out_costs: float, total handling out costs.
+        """
         total_handling_out_costs = 0
         logistic_units = unit_data.columns.difference(['state'])
 
@@ -115,7 +189,18 @@ class Parameters:
             total_handling_out_costs += dc_handling_out_costs
 
         return total_handling_out_costs
+    
     def handling_in_costs(self, dc_product_demand_container, handling_in_data):
+        """
+        Calculates the handling in costs for each DC.
+
+        Parameters:
+        - dc_product_demand_container: dict, product demand per DC in containers.
+        - handling_in_data: DataFrame, the handling in cost data.
+
+        Returns:
+        - dc_handling_in_costs: float, total handling in costs.
+        """
         dc_handling_in_costs = 0
         for dc, products_dict in dc_product_demand_container.items():
             num_containers_per_dc = 0
@@ -125,10 +210,19 @@ class Parameters:
 
             dc_handling_in_costs += handling_in_costs * num_containers_per_dc
                 
-        return (dc_handling_in_costs)
+        return dc_handling_in_costs
+    
     def storage_costs(self, volume_per_dc, warehousing_storageCost):
-        # Storage Costs (per cubic meter per month for each state)
+        """
+        Calculates the storage costs per cubic meter per month for each state.
 
+        Parameters:
+        - volume_per_dc: dict, volume required per DC for each product.
+        - warehousing_storageCost: DataFrame, the storage cost data.
+
+        Returns:
+        - total_storage_costs: float, total annual storage costs.
+        """
         total_sums = {} # total volume for each state
         total_storage_costs = {} # total costs for each state
 
@@ -144,20 +238,41 @@ class Parameters:
                 total_storage_costs[state] = total_sum * cost_per_m3
 
         total_storage_costs = sum(total_storage_costs.values())
-        return total_storage_costs*12
+        return total_storage_costs * 12
 
     def warehousing_costs(self, storage, handling_in, handling_out):
+        """
+        Calculates the total warehousing costs.
+
+        Parameters:
+        - storage: float, total storage costs.
+        - handling_in: float, total handling in costs.
+        - handling_out: float, total handling out costs.
+
+        Returns:
+        - total_warehousing_costs: float, total warehousing costs.
+        """
         total_warehousing_costs = storage + handling_in + handling_out
         return total_warehousing_costs
 
     def operational_costs(self, dc_allocation, as_is_dc=False, costs_data=False):
+        """
+        Calculates the total operational costs including operating, opening, and closing costs.
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - as_is_dc: dict, current state of DC allocation.
+        - costs_data: DataFrame, opening and closing cost data.
+
+        Returns:
+        - total_operational_costs: float, total operational costs.
+        """
         num_operating_DC = sum(1 for values in dc_allocation.values() if values)
-        operating_costs = num_operating_DC*1000000
+        operating_costs = num_operating_DC * 1000000
         opening_costs = 0
         closing_costs = 0
 
         if as_is_dc == True and costs_data == True:
-
             non_empty_as_is_dc = {k: v for k, v in as_is_dc.items() if v}
             non_empty_dc_allocation = {k: v for k, v in dc_allocation.items() if v}
 
@@ -169,17 +284,27 @@ class Parameters:
 
             if open_dc:
                 for dc in open_dc:
-                    opening_costs += costs_data['opening_price'][dc]*1000000
+                    opening_costs += costs_data['opening_price'][dc] * 1000000
 
             if closed_dc:
                 for dc in closed_dc:
-                    closing_costs += costs_data['closing_price'][dc]*1000000
+                    closing_costs += costs_data['closing_price'][dc] * 1000000
 
         total_operational_costs = operating_costs + opening_costs + closing_costs
 
         return total_operational_costs
     
     def total_storage_costs(self, dc_allocation, as_is_dc=False):
+        """
+        Calculates the total storage costs including warehousing, outbound, operational, and inbound costs.
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - as_is_dc: dict, current state of DC allocation (optional).
+
+        Returns:
+        - total_storage_costs: float, total storage costs.
+        """
         inbound = 1124750
         outbound = sum(self.outbound_costs(dc_allocation, self.demand_data, self.outbound_data))
         operational = self.operational_costs(dc_allocation, as_is_dc, self.costs_data)
@@ -199,6 +324,16 @@ class Parameters:
         return total_storage_costs
     
     def total_costs(self, dc_allocation, as_is_dc=False):
+        """
+        Calculates the total costs including warehousing, outbound, operational, and inbound costs.
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - as_is_dc: dict, current state of DC allocation (optional).
+
+        Returns:
+        - costs: list, total costs breakdown including total costs, inbound, warehousing, outbound, and operational costs.
+        """
         dc_product_demand = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data)
         dc_product_demand_container = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data, False)
         volume_dc = self.volume_per_dc(dc_product_demand)
@@ -216,5 +351,3 @@ class Parameters:
         costs = [total_costs, inbound, warehousing, outbound, operational]
 
         return costs
-
-to_be = {'WA': ['AK', 'ID', 'OR', 'WA'], 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'KY', 'MO', 'MS', 'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV'], 'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC'], 'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI'], 'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX']}

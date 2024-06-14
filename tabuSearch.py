@@ -2,8 +2,8 @@ import random
 import time
 import logging
 import matplotlib.pyplot as plt
-from prod_details import Parameters
-from to_be import To_Be
+from attributes.product_details import Parameters
+from attributes.to_be import To_Be
 
 tb = To_Be()
 pm = Parameters()

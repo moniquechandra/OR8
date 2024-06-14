@@ -7,7 +7,7 @@ import random
 import logging
 import time
 
-from prod_details import Parameters
+from attributes.product_details import Parameters
 pm = Parameters()
 
 class SA:

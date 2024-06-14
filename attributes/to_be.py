@@ -3,7 +3,7 @@ import pandas as pd
 import warnings
 warnings.filterwarnings('ignore')
 
-from prod_details import Parameters
+from attributes.product_details import Parameters
 pm = Parameters()
 outbound_data = pm.outbound_data
 
@@ -17,12 +17,6 @@ class To_Be:
     "TX": ['AR', 'AZ', 'LA', 'MS', 'NM', 'OK', 'TX'],
     "UT": ['CA', 'CO', 'NV', 'UT']
 }
-
-    # greedy_dc_allocation = {
-    # 'WA': ['AK', 'ID', 'OR', 'WA'], 
-    # 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'KY', 'MO', 'MS', 'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV'],
-    # 'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC'], 'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI'], 'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX']}
-
 
     greedy_dc_allocation = {}
     outbound_data = pm.outbound_data
@@ -40,5 +34,9 @@ class To_Be:
         else:
             greedy_dc_allocation[best_dc] = [greedy_dc_allocation[best_dc], state]
 
-
-    # print(pm.total_costs({'WA': [], 'TN': [], 'TX': ['IL', 'MI', 'MN'], 'UT': [], 'CA': ['AL', 'FL', 'GA', 'KY', 'MS', 'NC', 'OH', 'SC', 'VA', 'WV'], 'NY': ['AK', 'ID', 'MT', 'OR', 'WA'], 'PA': ['AR', 'LA', 'NM', 'OK', 'TN', 'TX'], 'KS': ['CT', 'DE', 'MA', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT'], 'IL': ['AZ', 'CO', 'NV', 'UT', 'WY'], 'ND': ['IN', 'ND', 'SD', 'WI']}, as_is_dc))
+    # greedy_dc_allocation should return this: {
+    # 'WA': ['AK', 'ID', 'OR', 'WA'], 
+    # 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'KY', 'MO', 'MS', 'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV'],
+    # 'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 
+    # 'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC'],
+    # 'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI'], 'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX']}
