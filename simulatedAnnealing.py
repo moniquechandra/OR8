@@ -7,7 +7,7 @@ import random
 import logging
 import time
 
-from attributes.product_details import Parameters
+from product_details import Parameters
 pm = Parameters()
 
 class SA:
@@ -33,7 +33,9 @@ class SA:
          'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 
          'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC'],
          'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI'],
-         'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX']}
+         'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX'], 'PA': [],
+        'KS': [],
+        'CA': []}
 
     # Set the initial objective value as the reference for improvement
     total_penalty = pm.total_costs(initial_solution, as_is_dc)[0]
@@ -42,8 +44,9 @@ class SA:
     improving_solution = initial_solution.copy()
 
     # Define the initial temperature, cooling rate, and tmax as the parameter of the algorithm
-    initial_temperature = 3000
-    cooling_rate = 0.999
+    # current_best = 12000 0.85 1000 - 150000 0.85
+    initial_temperature = 50000
+    cooling_rate = 0.85
     tmax = 1000
 
     # Initiate the lists for plotting the changes per iteration
@@ -82,13 +85,13 @@ class SA:
             dc_list = list(self.initial_solution.keys())
             while True:
                 from_dc = random.choice(dc_list)
-                if len(self.initial_solution[from_dc]) > 1:
+                if self.initial_solution[from_dc]:
                     break
 
             # Randomly select a DC as destination (avoid moving to an empty or same DC)
             while True:
                 to_dc = random.choice(dc_list)
-                if (to_dc != from_dc):
+                if to_dc != from_dc:
                     break
 
             state_to_move = random.sample(self.improving_solution[from_dc], 1)[0]
@@ -145,7 +148,7 @@ class SA:
 
         # Plot the improvements of the objective value (each dot represent each product)
         plt.plot(self.best_objective_value_list, marker="o", label="best solution")
-        plt.plot(self.current_objective_value_list, label="current solution")
+        # plt.plot(self.current_objective_value_list, label="current solution")
         plt.plot(self.temperature_list, label="temperature")
         plt.title(f"Objective Value Changes in Simulated Annealing with {self.tmax} iteration, temp {self.initial_temperature})")
         plt.xlabel("Number of iterations")

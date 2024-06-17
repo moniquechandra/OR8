@@ -3,7 +3,7 @@ import pandas as pd
 import warnings
 warnings.filterwarnings('ignore')
 
-from attributes.product_details import Parameters
+from product_details import Parameters
 pm = Parameters()
 outbound_data = pm.outbound_data
 

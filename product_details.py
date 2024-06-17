@@ -62,7 +62,7 @@ class Parameters:
                     elif not unit_in_box:
                         boxes_per_pallet = product_data.loc[product,'BOXES_PER_PALLET']
                         pallets_per_container = product_data.loc[product, 'PALLETS_PER_CONTAINER']
-                        total_demand_per_dc += np.ceil(((np.ceil(box_demand_per_state/boxes_per_pallet))/pallets_per_container))
+                        total_demand_per_dc += np.ceil(box_demand_per_state/boxes_per_pallet)/pallets_per_container
                 
                 dc_product_demand[dc][product] = np.ceil(total_demand_per_dc)
 
@@ -138,7 +138,7 @@ class Parameters:
             for i, product in enumerate(products):
                 num_boxes = products_dict[product]
                 hashtagdays = average_stock_level_per_product[i]
-                averagestockLevelForProductPerState[state][product] = m.ceil(num_boxes * hashtagdays)
+                averagestockLevelForProductPerState[state][product] = np.ceil(num_boxes * hashtagdays)
 
         for state, products_dict in averagestockLevelForProductPerState.items():
             volumes_perDC[state] = {}
@@ -166,12 +166,10 @@ class Parameters:
             for dc, states in dc_allocation.items():
                 if state in states:
                     weight_large_shipments_per_state = demand_data['total_weight_large_shipments'][state]
-                    # weight_small_shipments_per_state = demand_data['total_weight_small_shipments'][state]
+                    num_small_shipments_per_state = demand_data['num_small_shipments'][state]
                     
                     tariff_from_dc_to_state = outbound_data.loc[state, dc]
-
-                    outbound_per_dc.append(weight_large_shipments_per_state * tariff_from_dc_to_state)
-                    outbound_per_dc.append(7*51)
+                    outbound_per_dc.append(weight_large_shipments_per_state * tariff_from_dc_to_state + num_small_shipments_per_state * 7)
                                     
         return outbound_per_dc
 
@@ -214,6 +212,7 @@ class Parameters:
         Returns:
         - dc_handling_in_costs: float, total handling in costs.
         """
+        
         dc_handling_in_costs = 0
         for dc, products_dict in dc_product_demand_container.items():
             num_containers_per_dc = 0
@@ -268,7 +267,7 @@ class Parameters:
         total_warehousing_costs = storage + handling_in + handling_out
         return total_warehousing_costs
 
-    def operational_costs(self, dc_allocation, as_is_dc=False, costs_data=False):
+    def operational_costs(self, dc_allocation, costs_data, as_is_dc=False):
         """
         Calculates the total operational costs including operating, opening, and closing costs.
 
@@ -285,7 +284,7 @@ class Parameters:
         opening_costs = 0
         closing_costs = 0
 
-        if as_is_dc == True and costs_data == True:
+        if as_is_dc:
             non_empty_as_is_dc = {k: v for k, v in as_is_dc.items() if v}
             non_empty_dc_allocation = {k: v for k, v in dc_allocation.items() if v}
 
@@ -357,10 +356,10 @@ class Parameters:
         outbound = sum(self.outbound_costs(dc_allocation, self.demand_data, self.outbound_data))
         inbound = self.inbound_costs(dc_allocation, dc_product_demand_container, self.product_data, self.inbound_data) # has to be changed later
         warehousing = self.warehousing_costs(storage, handling_in, handling_out)
-        operational = self.operational_costs(dc_allocation, as_is_dc, self.costs_data)
+        operational = self.operational_costs(dc_allocation, self.costs_data, as_is_dc)
 
-        total_costs = outbound + operational + warehousing
+        total_costs = outbound + inbound + operational + warehousing
         
-        costs = [total_costs, inbound, warehousing, outbound, operational]
+        costs = [total_costs, inbound, handling_in, storage, handling_out, outbound, operational]
 
         return costs
