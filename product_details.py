@@ -1,5 +1,5 @@
 import pandas as pd
-import math as m
+import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -9,6 +9,9 @@ class Parameters:
     outbound_data.index = outbound_data.State
     outbound_data = outbound_data.drop(['State', 'Small shipment'], axis=1)
 
+    inbound_data = pd.read_excel("Inbound Costs.xlsx")
+    inbound_data.index = inbound_data.State
+    
     demand_data = pd.read_excel('Demand Forecast.xlsx')
     demand_data.index = demand_data.state
 
@@ -59,44 +62,54 @@ class Parameters:
                     elif not unit_in_box:
                         boxes_per_pallet = product_data.loc[product,'BOXES_PER_PALLET']
                         pallets_per_container = product_data.loc[product, 'PALLETS_PER_CONTAINER']
-                        total_demand_per_dc += (m.ceil(box_demand_per_state/boxes_per_pallet))/pallets_per_container
+                        total_demand_per_dc += np.ceil(((np.ceil(box_demand_per_state/boxes_per_pallet))/pallets_per_container))
                 
-                dc_product_demand[dc][product] = m.ceil(total_demand_per_dc) 
+                dc_product_demand[dc][product] = np.ceil(total_demand_per_dc)
 
         return dc_product_demand            
 
-    def inbound_containers_per_dc(dc_product_demand_containers):
+    def inbound_costs(self, dc_allocation, dc_product_demand_containers, product_data, inbound_data):
         """
-        Converts the product demand per DC to a DataFrame and exports it to an Excel file.
+        Calculate the total inbound costs.
 
         Parameters:
         - dc_product_demand_containers: dict, product demand per DC in containers.
 
         Returns:
-        - None
+        - inbound_costs: int, calculated inbound costs
         """
-        # Create lists to hold the data
-        states = []
-        products = []
-        containers = []
 
-        # Extract data from the dictionary
-        for state, products_data in dc_product_demand_containers.items():
-            for product, container_count in products_data.items():
-                states.append(state)
-                products.append(product)
-                containers.append(container_count)
+        inbound_costs = 0
+        for dc in dc_allocation:
+            for product in product_data.index:        
+                inbound_costs_per_dc = inbound_data.loc[dc, product]
+                amount_container_per_product = dc_product_demand_containers[dc][product]
+                inbound_costs += inbound_costs_per_dc * amount_container_per_product
 
-        # Create a DataFrame
-        df = pd.DataFrame({'State': states, 'Product': products, 'Containers': containers})
+        return inbound_costs
 
-        # Pivot the DataFrame to get the desired format
-        output_data = df.pivot(index='State', columns='Product', values='Containers')
+        # # Create lists to hold the data
+        # states = []
+        # products = []
+        # containers = []
 
-        # Export the DataFrame to an Excel file
-        output_file_path = "containers_output.xlsx"  # Specify the complete file path
-        output_data.to_excel(output_file_path)
-        print("Excel file created successfully:", output_file_path)
+        # # Extract data from the dictionary
+        # for state, products_data in dc_product_demand_containers.items():
+        #     for product, container_count in products_data.items():
+        #         states.append(state)
+        #         products.append(product)
+        #         containers.append(container_count)
+
+        # # Create a DataFrame
+        # df = pd.DataFrame({'State': states, 'Product': products, 'Containers': containers})
+
+        # # Pivot the DataFrame to get the desired format
+        # output_data = df.pivot(index='State', columns='Product', values='Containers')
+
+        # # Export the DataFrame to an Excel file
+        # output_file_path = "containers_output.xlsx"  # Specify the complete file path
+        # output_data.to_excel(output_file_path)
+        # print("Excel file created successfully:", output_file_path)
             
 
     def volume_per_dc(self, dc_product_demand):
@@ -115,7 +128,7 @@ class Parameters:
 
         divided_dict = {}
         for key, nested_dict in dc_product_demand.items():
-            divided_dict[key] = {nested_key: m.ceil(nested_value / 365) for nested_key, nested_value in nested_dict.items()}
+            divided_dict[key] = {nested_key: np.ceil(nested_value / 365) for nested_key, nested_value in nested_dict.items()}
 
         volumes_perDC = {}
         averagestockLevelForProductPerState = {}
@@ -132,7 +145,7 @@ class Parameters:
             for i, product in enumerate(products):
                 num_boxes = products_dict[product]
                 volume = volume_perBox[i]
-                volumes_perDC[state][product] = m.ceil(num_boxes * volume)
+                volumes_perDC[state][product] = np.ceil(num_boxes * volume)
 
         return volumes_perDC
 
@@ -146,9 +159,9 @@ class Parameters:
         - outbound_data: DataFrame, the outbound cost data.
 
         Returns:
-        - shipping_costs: list, calculated outbound shipping costs.
+        - outbound_per_dc: list, calculated outbound costs.
         """
-        shipping_costs = []
+        outbound_per_dc = []
         for state in demand_data.index:
             for dc, states in dc_allocation.items():
                 if state in states:
@@ -157,10 +170,10 @@ class Parameters:
                     
                     tariff_from_dc_to_state = outbound_data.loc[state, dc]
 
-                    shipping_costs.append(weight_large_shipments_per_state * tariff_from_dc_to_state)
-                    shipping_costs.append(7*51)
+                    outbound_per_dc.append(weight_large_shipments_per_state * tariff_from_dc_to_state)
+                    outbound_per_dc.append(7*51)
                                     
-        return shipping_costs
+        return outbound_per_dc
 
     def handling_out_costs(self, dc_allocation, unit_data, handling_out_data):
         """
@@ -342,7 +355,7 @@ class Parameters:
         handling_out = self.handling_out_costs(dc_allocation, self.unit_data, self.warehousing_handlingOut_data)
 
         outbound = sum(self.outbound_costs(dc_allocation, self.demand_data, self.outbound_data))
-        inbound = 1124750 # has to be changed later
+        inbound = self.inbound_costs(dc_allocation, dc_product_demand_container, self.product_data, self.inbound_data) # has to be changed later
         warehousing = self.warehousing_costs(storage, handling_in, handling_out)
         operational = self.operational_costs(dc_allocation, as_is_dc, self.costs_data)
 
