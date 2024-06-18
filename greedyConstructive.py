@@ -1,5 +1,5 @@
-from attributes.product_details import Parameters
-from attributes.to_be import To_Be
+from product_details import Parameters
+from to_be import To_Be
 pm = Parameters()
 tb = To_Be()
 
@@ -40,17 +40,10 @@ def dc_greedy_constructive_search(open_dc=True):
 
     return greedy_dc_allocation
 
-# Alg. 1: Turns out, even though the shipping costs are lower,
-# the total costs are relatively higher due to the increasing operating and opening costs.
-
-# Alg. 2: The shipping costs are lowered again, but the handling costs are increasing slightly.
-# It resulted in a less significant decrease.
-
 all_costs = pm.total_costs(dc_greedy_constructive_search(open_dc=False), tb.as_is_dc)
 print('Total Costs:', round(all_costs[0]))
 print('Total Inbound Costs:', round(all_costs[1]))
 print('Total Warehousing Costs:', round(all_costs[2]))
 print('Total Outbound Costs:', round(all_costs[3]))
 print('Total Operational Costs:', round(all_costs[4]))
-
 print(dc_greedy_constructive_search(open_dc=False))

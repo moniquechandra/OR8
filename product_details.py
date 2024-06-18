@@ -71,12 +71,12 @@ class Parameters:
 
         return dc_product_demand            
 
-    def inbound_costs(self, dc_allocation, dc_product_demand_containers, product_data, inbound_data):
+    def inbound_costs(self, dc_allocation, dc_product_demand_container, product_data, inbound_data):
         """
         Calculate the total inbound costs.
 
         Parameters:
-        - dc_product_demand_containers: dict, product demand per DC in containers.
+        - dc_product_demand_container: dict, product demand per DC in containers.
 
         Returns:
         - inbound_costs: int, calculated inbound costs
@@ -86,7 +86,7 @@ class Parameters:
         for dc in dc_allocation:
             for product in product_data.index:        
                 inbound_costs_per_dc = inbound_data.loc[dc, product]
-                amount_container_per_product = dc_product_demand_containers[dc][product]
+                amount_container_per_product = dc_product_demand_container[dc][product]
                 inbound_costs += inbound_costs_per_dc * amount_container_per_product
 
         return inbound_costs
@@ -338,35 +338,6 @@ class Parameters:
         
         return total_storage_costs
     
-    def total_costs(self, dc_allocation, as_is_dc=False):
-        """
-        Calculates the total costs including warehousing, outbound, operational, and inbound costs.
-
-        Parameters:
-        - dc_allocation: dict, allocation of states to DCs.
-        - as_is_dc: dict, current state of DC allocation (optional).
-
-        Returns:
-        - costs: list, total costs breakdown including total costs, inbound, warehousing, outbound, and operational costs.
-        """
-        dc_product_demand = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data)
-        dc_product_demand_container = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data, False)
-        volume_dc = self.volume_per_dc(dc_product_demand)
-        storage = self.storage_costs(volume_dc, self.warehousing_storageCost)
-        handling_in = self.handling_in_costs(dc_product_demand_container, self.warehousing_handlingIn_data)
-        handling_out = self.handling_out_costs(dc_allocation, self.unit_data, self.warehousing_handlingOut_data)
-
-        outbound = sum(self.outbound_costs(dc_allocation, self.demand_data, self.outbound_data))
-        inbound = self.inbound_costs(dc_allocation, dc_product_demand_container, self.product_data, self.inbound_data) # has to be changed later
-        warehousing = self.warehousing_costs(storage, handling_in, handling_out)
-        operational = self.operational_costs(dc_allocation, self.costs_data, as_is_dc)
-
-        total_costs = outbound + inbound + operational + warehousing
-        
-        costs = [total_costs, inbound, handling_in, storage, handling_out, outbound, operational]
-
-        return costs
-
     def total_gas_emission(self, dc_allocation, dc_product_demand_container, gas_emission_data):
                 
         total_gas_emission = 0
@@ -380,3 +351,36 @@ class Parameters:
 
         return total_gas_emission
         
+
+    def total_costs(self, dc_allocation, as_is_dc=False):
+        """
+        Calculates the total costs including warehousing, outbound, operational, and inbound costs.
+
+        Parameters:
+        - dc_allocation: dict, allocation of states to DCs.
+        - as_is_dc: dict, current state of DC allocation (optional).
+
+        Returns:
+        - costs: list, total costs breakdown including total costs, inbound, warehousing, outbound, operational costs and gas emission for inbound operations.
+        """
+        dc_product_demand = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data)
+        dc_product_demand_container = self.product_demand_per_dc(dc_allocation, self.demand_data, self.product_data, False)
+        volume_dc = self.volume_per_dc(dc_product_demand)
+        storage = self.storage_costs(volume_dc, self.warehousing_storageCost)
+        handling_in = self.handling_in_costs(dc_product_demand_container, self.warehousing_handlingIn_data)
+        handling_out = self.handling_out_costs(dc_allocation, self.unit_data, self.warehousing_handlingOut_data)
+
+        outbound = sum(self.outbound_costs(dc_allocation, self.demand_data, self.outbound_data))
+        inbound = self.inbound_costs(dc_allocation, dc_product_demand_container, self.product_data, self.inbound_data) # has to be changed later
+        warehousing = self.warehousing_costs(storage, handling_in, handling_out)
+        operational = self.operational_costs(dc_allocation, self.costs_data, as_is_dc)
+
+        gas_emission = self.total_gas_emission(dc_allocation, dc_product_demand_container, self.gas_emission_data)
+
+        total_costs = outbound + inbound + operational + warehousing
+        
+        costs = [total_costs, inbound, handling_in, storage, handling_out, outbound, operational, gas_emission]
+
+        return costs
+
+    

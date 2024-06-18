@@ -64,5 +64,7 @@ Time complexity of the algorithm for 1000 iterations = 0.02253857946395874 secon
 
 
 # FROM TABU SEARCH MIN IT = 200, TENURE = 5, greedy allocation
-2024-06-14 03:55:07,483 - tabu_search - Improving allocation = {'WA': ['ID', 'OR', 'WA'], 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'KY', 'MO', 'MS', 'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV', 'MI'], 'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC'], 'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI', 'AK'], 'IL': ['IL'], 'TX': ['LA', 'NM', 'OK', 'TX']}
-9809541.9660783
+2024-06-18 11:45:19,074 - tabuSearch - Best allocation = {'WA': ['SD'], 'TN': ['FL', 'KY', 'MS', 'NC', 'OH', 'WV', 'IN', 'RI', 'SC', 'CO', 'IA', 'DC', 'AZ', 'CT', 'MO', 'NJ'], 'TX': ['LA', 'TN', 'NY', 'AR', 'WY', 'CA', 'HI', 'DE'], 'UT': ['UT', 'TX', 'NM', 'KS', 'NE', 'ID', 'MA', 'ME'], 'CA': [], 'NY': ['NH', 'VT', 'PA', 'VA'], 'PA': [], 'KS': [], 'IL': ['IL', 'MI', 'GA', 'NV', 'MD', 'AK', 'MT', 'AL', 'MN'], 'ND': ['ND', 'WA', 'OK', 'OR', 'WI']}
+2024-06-18 11:45:19,121 - tabuSearch - Total costs = 11882062.87607353
+2024-06-18 11:45:19,121 - tabuSearch - Computation time = 44.167399168014526
+2024-06-18 11:45:19,121 - tabuSearch - Time complexity of the algorithm for 1000 iterations = 0.04416739916801453 seconds

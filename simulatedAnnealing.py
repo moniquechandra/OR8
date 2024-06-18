@@ -28,7 +28,13 @@ class SA:
     log_format = "%(asctime)s - %(module)s - %(message)s"
     logging.basicConfig(filename='log_file.log', level=logging.INFO, format=log_format, filemode='w')
 
-    initial_solution = {'WA': ['AK', 'ID', 'MT', 'OR', 'WA'], 'TN': ['AL', 'FL', 'GA', 'KY', 'MS', 'NC', 'OH', 'SC', 'VA', 'WV'], 'TX': ['AR', 'LA', 'NM', 'OK', 'TN', 'TX'], 'UT': ['AZ', 'CO', 'NV', 'UT', 'WY'], 'CA': ['CA'], 'NY': ['CT', 'DE', 'MA', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT'], 'PA': ['HI', 'MD', 'PA', 'DC'], 'KS': ['IA', 'KS', 'MO', 'NE'], 'IL': ['IL', 'MI', 'MN'], 'ND': ['IN', 'ND', 'SD', 'WI']}
+    initial_solution = {'WA': ['AK', 'ID', 'MT', 'OR', 'WA'],
+                        'TN': ['AL', 'FL', 'GA', 'KY', 'MS', 'NC', 'OH', 'SC', 'VA', 'WV'],
+                        'TX': ['AR', 'LA', 'NM', 'OK', 'TN', 'TX'],
+                        'UT': ['AZ', 'CO', 'NV', 'UT', 'WY'], 'CA': ['CA'],
+                        'NY': ['CT', 'DE', 'MA', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT'],
+                        'PA': ['HI', 'MD', 'PA', 'DC'], 'KS': ['IA', 'KS', 'MO', 'NE'],
+                        'IL': ['IL', 'MI', 'MN'], 'ND': ['IN', 'ND', 'SD', 'WI']}
 
     # Set the initial objective value as the reference for improvement
     total_penalty = pm.total_costs(initial_solution, as_is_dc)[0]
@@ -39,7 +45,7 @@ class SA:
     # Define the initial temperature, cooling rate, and tmax as the parameter of the algorithm
     # current_best = 12000 0.85 1000 - 150000 0.85
     initial_temperature = 4000000
-    cooling_rate = 0.85
+    cooling_rate = 0.8
     tmax = 1000
 
     # Initiate the lists for plotting the changes per iteration

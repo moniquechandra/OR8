@@ -120,11 +120,19 @@ def tabu_search(initial_solution, max_iterations, tabu_tenure):
     return best_cost, best_solution
 
 # Define the initial solution
-initial_solution = tb.greedy_dc_allocation
+# initial_solution = tb.greedy_dc_allocation
+initial_solution = {'WA': ['AK', 'ID', 'MT', 'OR', 'WA'],
+                    'TN': ['AL', 'FL', 'GA', 'KY', 'MS', 'NC', 'OH', 'SC', 'VA', 'WV'],
+                    'TX': ['AR', 'LA', 'NM', 'OK', 'TN', 'TX'],
+                    'UT': ['AZ', 'CO', 'NV', 'UT', 'WY'], 'CA': ['CA'],
+                    'NY': ['CT', 'DE', 'MA', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT'],
+                    'PA': ['HI', 'MD', 'PA', 'DC'], 'KS': ['IA', 'KS', 'MO', 'NE'],
+                    'IL': ['IL', 'MI', 'MN'], 'ND': ['IN', 'ND', 'SD', 'WI']}
+
 
 # Define the Tabu Search parameters
-tabu_tenure = 6
-max_iterations = 200
+tabu_tenure = 7
+max_iterations = 2000
 
 # Execute the algorithm
 cost, solution = tabu_search(initial_solution, max_iterations, tabu_tenure)
