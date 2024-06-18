@@ -46,6 +46,16 @@ Time complexity of the algorithm for 1000 iterations = 0.0416570565700531 second
 2024-06-17 22:27:38,978 - simulatedAnnealing - Total costs = 10458920.49382504
 2024-06-17 22:27:39,022 - simulatedAnnealing - Difference of costs = 500523.9548677504
 
+
+# FROM SA TEMP 4000000, CR = 0.85, TMAX = 1000 (di pic 0.8)
+2024-06-18 03:44:07,677 - simulatedAnnealing - Computation time = 22.53857946395874
+2024-06-18 03:44:07,677 - simulatedAnnealing - 
+Time complexity of the algorithm for 1000 iterations = 0.02253857946395874 seconds
+2024-06-18 03:44:07,677 - simulatedAnnealing - Best solution = {'WA': ['AK', 'MT', 'WA'], 'TN': ['IN', 'MI', 'MS', 'OH', 'VA', 'MA', 'TN', 'PA', 'NJ', 'NH', 'KS', 'KY', 'DE', 'GA', 'AR', 'MO', 'MD', 'AL', 'NC', 'IL', 'UT', 'SC', 'WI', 'WV', 'CT', 'IA', 'ND', 'MN', 'SD', 'FL'], 'TX': ['TX', 'LA', 'OK'], 'UT': ['NM', 'AZ', 'OR', 'NE', 'NV', 'HI', 'CA', 'ID', 'CO', 'WY'], 'CA': [], 'NY': ['NY', 'RI'], 'PA': [], 'KS': [], 'IL': ['DC', 'VT', 'ME'], 'ND': []}
+2024-06-18 03:44:07,698 - simulatedAnnealing - Total costs = 10330102.31917967
+2024-06-18 03:44:07,719 - simulatedAnnealing - Difference of costs = 5285517.21582414
+
+
 # FROM TABU SEARCH MIN IT = 200, TENURE = 7
 2024-06-18 00:08:43,032 - tabuSearch - Best allocation = {'WA': [], 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'MS', 'NC', 'PA', 'TN', 'VA', 'WV', 'OR', 'MD', 'SD', 'RI', 'MI', 'IA', 'AK', 'WI', 'AZ', 'IN'], 'UT': ['ND', 'IL', 'SC', 'MN'], 'NY': ['CT', 'HI', 'MA', 'ME', 'NH', 'NY', 'VT', 'DC', 'MO', 'DE', 'OK', 'NV', 'MT', 'CA', 'ID', 'NE', 'CO', 'WY', 'KY', 'OH'], 'ND': [], 'IL': [], 'TX': ['LA', 'NM', 'TX', 'WA', 'NJ', 'UT']}
 2024-06-18 00:08:43,081 - tabuSearch - Total costs = 9392920.66529553

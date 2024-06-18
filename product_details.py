@@ -10,7 +10,10 @@ class Parameters:
     outbound_data = outbound_data.drop(['State', 'Small shipment'], axis=1)
 
     inbound_data = pd.read_excel("Inbound Costs.xlsx")
+    gas_emission_data = pd.read_excel("Inbound Costs.xlsx", sheet_name='Gas Emission Inbound')
     inbound_data.index = inbound_data.State
+    gas_emission_data.index = gas_emission_data.State
+    gas_emission_data = gas_emission_data.drop('State', axis=1)
     
     demand_data = pd.read_excel('Demand Forecast.xlsx')
     demand_data.index = demand_data.state
@@ -363,3 +366,17 @@ class Parameters:
         costs = [total_costs, inbound, handling_in, storage, handling_out, outbound, operational]
 
         return costs
+
+    def total_gas_emission(self, dc_allocation, dc_product_demand_container, gas_emission_data):
+                
+        total_gas_emission = 0
+        for dc, products_dict in dc_product_demand_container.items():
+            num_containers_per_dc = 0
+            for product in products_dict.keys():
+                num_containers_per_dc += products_dict[product]
+                gas_emission_container = gas_emission_data.loc[dc, product]
+
+            total_gas_emission += gas_emission_container * num_containers_per_dc
+
+        return total_gas_emission
+        
