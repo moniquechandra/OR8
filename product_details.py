@@ -378,8 +378,9 @@ class Parameters:
         gas_emission = self.total_gas_emission(dc_allocation, dc_product_demand_container, self.gas_emission_data)
 
         total_costs = outbound + inbound + operational + warehousing
+        total_obj = total_costs + gas_emission
         
-        costs = [total_costs, inbound, handling_in, storage, handling_out, outbound, operational, gas_emission]
+        costs = [total_obj, total_costs, inbound, handling_in, storage, handling_out, outbound, operational, gas_emission]
 
         return costs
 

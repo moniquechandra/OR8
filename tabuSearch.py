@@ -67,7 +67,7 @@ def tabu_search(initial_solution, max_iterations, tabu_tenure):
     try:
         start_algorithm = time.time()
         current_solution = copy.deepcopy(initial_solution)
-        current_cost = pm.total_costs(current_solution, as_is_dc)[0]
+        current_cost = round(pm.total_costs(current_solution, as_is_dc)[0])
         best_cost = current_cost
         best_solution = copy.deepcopy(current_solution)
         tabu_list = []
@@ -76,7 +76,7 @@ def tabu_search(initial_solution, max_iterations, tabu_tenure):
 
         for iteration in range(max_iterations):
             neighbor = generate_neighbor(current_solution)
-            cost = pm.total_costs(neighbor, as_is_dc)[0]
+            cost = round(pm.total_costs(neighbor, as_is_dc)[0])
 
             move = (tuple(sorted(current_solution.items())), tuple(sorted(neighbor.items())))  # Convert dict to sorted tuple for tabu list
             if not is_tabu(move, tabu_list) or cost < best_cost:  # Aspiration criteria
@@ -101,7 +101,7 @@ def tabu_search(initial_solution, max_iterations, tabu_tenure):
 
         # Log the computation time and time complexity of the algorithm
         logging.info(f"Best allocation = {best_solution}")
-        logging.info(f"Total costs = {pm.total_costs(best_solution, as_is_dc)[0]}")
+        logging.info(f"Total costs = {round(pm.total_costs(best_solution, as_is_dc)[0])}")
         logging.info(f"Computation time = {elapsed_algorithm}")
         logging.info(f"Time complexity of the algorithm for {max_iterations} iterations = {elapsed_algorithm / max_iterations} seconds")
         
@@ -131,8 +131,8 @@ initial_solution = {'WA': ['AK', 'ID', 'MT', 'OR', 'WA'],
 
 
 # Define the Tabu Search parameters
-tabu_tenure = 7
-max_iterations = 2000
+tabu_tenure = 5
+max_iterations = 200
 
 # Execute the algorithm
 cost, solution = tabu_search(initial_solution, max_iterations, tabu_tenure)

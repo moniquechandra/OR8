@@ -37,14 +37,14 @@ class SA:
                         'IL': ['IL', 'MI', 'MN'], 'ND': ['IN', 'ND', 'SD', 'WI']}
 
     # Set the initial objective value as the reference for improvement
-    total_penalty = pm.total_costs(initial_solution, as_is_dc)[0]
+    total_penalty = round(pm.total_costs(initial_solution, as_is_dc)[0])
 
     # Make a copy of the initial solution to avoid modifying it directly
     improving_solution = initial_solution.copy()
 
     # Define the initial temperature, cooling rate, and tmax as the parameter of the algorithm
     # current_best = 12000 0.85 1000 - 150000 0.85
-    initial_temperature = 4000000
+    initial_temperature = 6000000
     cooling_rate = 0.8
     tmax = 1000
 
@@ -102,7 +102,7 @@ class SA:
             # self.improving_solution[to_dc] = states_from_dc
             
             # Calculate the penalty of the current solution
-            current_penalty = pm.total_costs(improving_solution, self.as_is_dc)[0]
+            current_penalty = round(pm.total_costs(improving_solution, self.as_is_dc)[0])
             self.current_objective_value_list.append(current_penalty)
 
             # Evaluate the current solution using net objective function improvement
@@ -142,13 +142,13 @@ class SA:
         logging.info(f"Computation time = {elapsed_algorithm}")
         logging.info(f"\nTime complexity of the algorithm for {self.tmax} iterations = {elapsed_algorithm / self.tmax} seconds")
         logging.info(f"Best solution = {best_solution}")
-        logging.info(f"Total costs = {pm.total_costs(best_solution, self.as_is_dc)[0]}")
-        logging.info(f"Difference of costs = {self.total_penalty - pm.total_costs(best_solution, self.as_is_dc)[0]}")
+        logging.info(f"Total costs = {round(pm.total_costs(best_solution, self.as_is_dc)[0])}")
+        logging.info(f"Difference of costs = {self.total_penalty - round(pm.total_costs(best_solution, self.as_is_dc)[0])}")
 
         # Plot the improvements of the objective value (each dot represent each product)
         plt.plot(self.best_objective_value_list, marker="o", label="best solution")
         plt.plot(self.current_objective_value_list, label="current solution")
-        plt.plot(self.temperature_list, label="temperature")
+        # plt.plot(self.temperature_list, label="temperature")
         plt.title(f"Objective Value Changes in Simulated Annealing with {self.tmax} iteration, temp {self.initial_temperature})")
         plt.xlabel("Number of iterations")
         plt.legend()

@@ -1,26 +1,9 @@
-# FROM SA TEMP 2000, CR = 0.9, TMAX = 100
-2024-06-14 04:29:09,319 - test - Computation time = 76.93983221054077
-2024-06-14 04:29:09,320 - test - 
-Time complexity of the algorithm for 100 iterations = 0.7693983221054077 seconds
-2024-06-14 04:29:09,320 - test - Best solution = {'WA': ['ID', 'WA', 'OR', 'AK'], 'TN': ['AR', 'MO', 'PA', 'VA', 'WV', 'AL', 'KY', 'DE', 'GA', 'FL', 'MS', 'KS', 'MD', 'NJ', 'NC', 'SC', 'OH', 'TN', 'CT'], 'UT': ['CO', 'UT', 'CA', 'AZ', 'WY', 'NV'], 'NY': ['MA', 'NY', 'VT', 'RI'], 'ND': ['SD', 'ND', 'WI', 'MN', 'IN', 'NE', 'IA', 'MT'], 'IL': ['IL', 'HI', 'MI', 'ME', 'NH', 'DC'], 'TX': ['NM', 'TX', 'LA', 'OK']}
-2024-06-14 04:29:09,431 - test - Total costs = 9742589.24476055
-2024-06-14 04:29:09,551 - test - Difference of costs = 74750.2039322406
-
-# FROM SA TEMP 2000, CR = 0.999, TMAX = 1000
-2024-06-14 04:38:08,290 - test - Computation time = 20.100895643234253
-2024-06-14 04:38:08,290 - test - 
-Time complexity of the algorithm for 1000 iterations = 0.020100895643234255 seconds
-2024-06-14 04:38:08,290 - test - Best solution = {'WA': ['AK', 'WA'], 'TN': ['PA', 'MD', 'TN', 'OH', 'AL', 'DC', 'RI', 'ME', 'WV', 'NJ', 'HI', 'NC', 'KY', 'MS', 'GA', 'KS', 'IL', 'FL', 'MI', 'AR', 'MA', 'VA', 'CT', 'SC', 'DE', 'MO', 'NY'], 'UT': ['NV', 'ID', 'CA', 'AZ', 'UT', 'CO', 'WY'], 'NY': ['VT'], 'ND': ['ND', 'MN', 'OR', 'IA', 'NE', 'MT', 'WI', 'SD', 'IN'], 'IL': ['NH'], 'TX': ['LA', 'OK', 'NM', 'TX']}
-2024-06-14 04:38:08,309 - test - Total costs = 9678469.7226878
-2024-06-14 04:38:08,329 - test - Difference of costs = 138869.72600499168
-
 # FROM SA TEMP 2000, CR = 0.8, TMAX = 200
 2024-06-14 04:12:26,844 - simulated_annealing - Improving allocation = {'WA': ['AK', 'ID', 'OR', 'WA'], 'ND': ['IA', 'IN', 'MN', 'MT', 'ND', 'NE', 'SD', 'WI'], 'IL': ['IL', 'MI'], 'TX': ['LA', 'NM', 'OK', 'TX'], 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'KY', 'MO', 'MS', 'NC', 'OH', 'PA', 'SC', 'TN', 'VA', 'WV'], 'UT': ['AZ', 'CA', 'CO', 'NV', 'UT', 'WY'], 'NY': ['CT', 'DE', 'HI', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'RI', 'VT', 'DC']}
 2024-06-14 04:12:29,202 - simulated_annealing - Computation time = 18.669376611709595
 2024-06-14 04:12:29,202 - simulated_annealing - 
 Time complexity of the algorithm for 500 iterations = 0.03733875322341919 seconds
 2024-06-14 04:12:46,938 - simulated_annealing - SA's objective value: 9817339.448692791
-
 
 # FROM SA TEMP 2000, CR = 0.999, TMAX = 1000
 2024-06-17 22:15:50,680 - simulatedAnnealing - Computation time = 42.824002265930176
@@ -38,7 +21,7 @@ Time complexity of the algorithm for 1000 iterations = 0.04271610426902771 secon
 2024-06-17 22:13:52,586 - simulatedAnnealing - Total costs = 10479690.1834949
 2024-06-17 22:13:52,617 - simulatedAnnealing - Difference of costs = 479754.26519789174
 
-# FROM SA TEMP 5000, CR = 0.8, TMAX = 1000
+# FROM SA TEMP 5000, CR = 0.8, TMAX = 1000 - non-greedy
 2024-06-17 22:27:38,930 - simulatedAnnealing - Computation time = 41.6570565700531
 2024-06-17 22:27:38,930 - simulatedAnnealing - 
 Time complexity of the algorithm for 1000 iterations = 0.0416570565700531 seconds
@@ -46,22 +29,13 @@ Time complexity of the algorithm for 1000 iterations = 0.0416570565700531 second
 2024-06-17 22:27:38,978 - simulatedAnnealing - Total costs = 10458920.49382504
 2024-06-17 22:27:39,022 - simulatedAnnealing - Difference of costs = 500523.9548677504
 
-
-# FROM SA TEMP 4000000, CR = 0.85, TMAX = 1000 (di pic 0.8)
+# FROM SA TEMP 4000000, CR = 0.85, TMAX = 1000 - greedy allocation (di pic 0.8)
 2024-06-18 03:44:07,677 - simulatedAnnealing - Computation time = 22.53857946395874
 2024-06-18 03:44:07,677 - simulatedAnnealing - 
 Time complexity of the algorithm for 1000 iterations = 0.02253857946395874 seconds
 2024-06-18 03:44:07,677 - simulatedAnnealing - Best solution = {'WA': ['AK', 'MT', 'WA'], 'TN': ['IN', 'MI', 'MS', 'OH', 'VA', 'MA', 'TN', 'PA', 'NJ', 'NH', 'KS', 'KY', 'DE', 'GA', 'AR', 'MO', 'MD', 'AL', 'NC', 'IL', 'UT', 'SC', 'WI', 'WV', 'CT', 'IA', 'ND', 'MN', 'SD', 'FL'], 'TX': ['TX', 'LA', 'OK'], 'UT': ['NM', 'AZ', 'OR', 'NE', 'NV', 'HI', 'CA', 'ID', 'CO', 'WY'], 'CA': [], 'NY': ['NY', 'RI'], 'PA': [], 'KS': [], 'IL': ['DC', 'VT', 'ME'], 'ND': []}
-2024-06-18 03:44:07,698 - simulatedAnnealing - Total costs = 10330102.31917967
-2024-06-18 03:44:07,719 - simulatedAnnealing - Difference of costs = 5285517.21582414
-
-
-# FROM TABU SEARCH MIN IT = 200, TENURE = 7
-2024-06-18 00:08:43,032 - tabuSearch - Best allocation = {'WA': [], 'TN': ['AL', 'AR', 'FL', 'GA', 'KS', 'MS', 'NC', 'PA', 'TN', 'VA', 'WV', 'OR', 'MD', 'SD', 'RI', 'MI', 'IA', 'AK', 'WI', 'AZ', 'IN'], 'UT': ['ND', 'IL', 'SC', 'MN'], 'NY': ['CT', 'HI', 'MA', 'ME', 'NH', 'NY', 'VT', 'DC', 'MO', 'DE', 'OK', 'NV', 'MT', 'CA', 'ID', 'NE', 'CO', 'WY', 'KY', 'OH'], 'ND': [], 'IL': [], 'TX': ['LA', 'NM', 'TX', 'WA', 'NJ', 'UT']}
-2024-06-18 00:08:43,081 - tabuSearch - Total costs = 9392920.66529553
-2024-06-18 00:08:43,081 - tabuSearch - Computation time = 8.373522758483887
-2024-06-18 00:08:43,081 - tabuSearch - Time complexity of the algorithm for 200 iterations = 0.041867613792419434 seconds
-
+2024-06-18 03:44:07,698 - simulatedAnnealing - Total costs = 11858602
+2024-06-18 03:44:07,719 - simulatedAnnealing - Difference of costs = 5285517
 
 # FROM TABU SEARCH MIN IT = 200, TENURE = 5, greedy allocation
 2024-06-18 11:45:19,074 - tabuSearch - Best allocation = {'WA': ['SD'], 'TN': ['FL', 'KY', 'MS', 'NC', 'OH', 'WV', 'IN', 'RI', 'SC', 'CO', 'IA', 'DC', 'AZ', 'CT', 'MO', 'NJ'], 'TX': ['LA', 'TN', 'NY', 'AR', 'WY', 'CA', 'HI', 'DE'], 'UT': ['UT', 'TX', 'NM', 'KS', 'NE', 'ID', 'MA', 'ME'], 'CA': [], 'NY': ['NH', 'VT', 'PA', 'VA'], 'PA': [], 'KS': [], 'IL': ['IL', 'MI', 'GA', 'NV', 'MD', 'AK', 'MT', 'AL', 'MN'], 'ND': ['ND', 'WA', 'OK', 'OR', 'WI']}
